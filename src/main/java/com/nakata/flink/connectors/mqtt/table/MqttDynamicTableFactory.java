@@ -1,4 +1,4 @@
-package com.example.flink.connector.mqtt.table;
+package com.nakata.flink.connectors.mqtt.table;
 
 import org.apache.flink.api.common.serialization.DeserializationSchema;
 import org.apache.flink.api.common.serialization.SerializationSchema;
@@ -15,7 +15,7 @@ import org.apache.flink.table.factories.*;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.example.flink.connector.mqtt.table.MqttOptions.*;
+import static com.nakata.flink.connectors.mqtt.table.MqttOptions.*;
 import static org.apache.flink.table.factories.FactoryUtil.createTableFactoryHelper;
 
 public class MqttDynamicTableFactory implements DynamicTableSourceFactory, DynamicTableSinkFactory {

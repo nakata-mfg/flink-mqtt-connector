@@ -1,4 +1,4 @@
-package com.example.flink.connector.mqtt.table;
+package com.nakata.flink.connectors.mqtt.table;
 
 import org.apache.flink.api.common.serialization.DeserializationSchema;
 import org.apache.flink.configuration.ReadableConfig;
@@ -12,7 +12,7 @@ import org.apache.flink.table.connector.source.SourceFunctionProvider;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.types.RowKind;
 
-import static com.example.flink.connector.mqtt.table.MqttOptions.*;
+import static com.nakata.flink.connectors.mqtt.table.MqttOptions.*;
 
 public class MqttDynamicTableSource implements ScanTableSource {
     private ReadableConfig options;

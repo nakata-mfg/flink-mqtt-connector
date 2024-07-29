@@ -1,4 +1,4 @@
-package com.example.flink.connector.mqtt.table;
+package com.nakata.flink.connectors.mqtt.table;
 
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.TableEnvironment;
@@ -33,7 +33,7 @@ public class FlinkTableJustSource {
         // 打印输出结果
         tableResult.print();
         // 启动任务并等待任务完成
-        tEnv.execute("Flink MQTT Source Example");
+        tEnv.getConfig().set("pipeline.name","Flink MQTT Source Example");
     }
 
 }

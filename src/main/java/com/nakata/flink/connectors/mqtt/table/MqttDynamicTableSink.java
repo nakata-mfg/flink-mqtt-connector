@@ -1,4 +1,4 @@
-package com.example.flink.connector.mqtt.table;
+package com.nakata.flink.connectors.mqtt.table;
 
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.configuration.ReadableConfig;
@@ -10,7 +10,7 @@ import org.apache.flink.table.connector.sink.DynamicTableSink;
 import org.apache.flink.table.connector.sink.SinkFunctionProvider;
 import org.apache.flink.table.data.RowData;
 
-import static com.example.flink.connector.mqtt.table.MqttOptions.*;
+import static com.nakata.flink.connectors.mqtt.table.MqttOptions.*;
 
 public class MqttDynamicTableSink implements DynamicTableSink {
     private ReadableConfig options;

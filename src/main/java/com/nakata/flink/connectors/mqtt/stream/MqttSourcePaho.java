@@ -1,4 +1,4 @@
-package com.example.flink.connector.mqtt.stream;
+package com.nakata.flink.connectors.mqtt.stream;
 
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
 import org.eclipse.paho.client.mqttv3.*;

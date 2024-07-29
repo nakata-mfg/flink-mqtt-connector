@@ -1,4 +1,4 @@
-package com.example.flink.connector.mqtt.table;
+package com.nakata.flink.connectors.mqtt.table;
 
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;

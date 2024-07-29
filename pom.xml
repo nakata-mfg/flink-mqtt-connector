@@ -4,16 +4,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
-    <artifactId>flinkmqtt</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>com.nakata.yinjilong</groupId>
+    <artifactId>flink-mqtt-connector</artifactId>
+    <version>0.0.1</version>
+    <packaging>jar</packaging>
+    <name>Flink MQTT Connector</name>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <flink.version>1.14.3</flink.version>
-        <scala.binary.version>2.11</scala.binary.version>
+        <target.java.version>11</target.java.version>
+        <scala.binary.version>2.12</scala.binary.version>
+        <maven.compiler.source>${target.java.version}</maven.compiler.source>
+        <maven.compiler.target>${target.java.version}</maven.compiler.target>
+        <flink.version>1.19.1</flink.version>
     </properties>
 
     <!--打包到线上的时候需要排队掉flink相关的依赖，避免生成的jar包过大，请使用下述dependencies-->
@@ -86,23 +89,23 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.13</version>
+            <version>1.5.6</version>
         </dependency>
         <!--选择 Java 或者 Scala API 来构建你的 Table API 和 SQL 程序-->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-api-java-bridge_${scala.binary.version}</artifactId>
+            <artifactId>flink-table-api-java-bridge</artifactId>
             <version>${flink.version}</version>
         </dependency>
-        <!-- 如果你想在 IDE 本地运行你的程序，你需要添加下面的模块，具体用哪个取决于你使用哪个 Planner -->
+<!--        &lt;!&ndash; 如果你想在 IDE 本地运行你的程序，你需要添加下面的模块，具体用哪个取决于你使用哪个 Planner &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.flink</groupId>-->
+<!--            <artifactId>flink-table-planner_${scala.binary.version}</artifactId>-->
+<!--            <version>${flink.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-planner_${scala.binary.version}</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
+            <artifactId>flink-streaming-java</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <!-- 如果你想实现自定义格式或连接器 用于（反）序列化行或一组用户定义的函数，下面的依赖就足够了，编译出来的 jar 文件可以直接给 SQL Client 使用：-->
@@ -130,7 +133,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-clients_${scala.binary.version}</artifactId>
+            <artifactId>flink-clients</artifactId>
             <version>${flink.version}</version>
         </dependency>
     </dependencies>
