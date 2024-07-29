@@ -8,14 +8,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 
-public class MqttSourcePaho extends RichSourceFunction<MyMqttMessage> implements Serializable {
+public class MqttSourcePaho extends RichSourceFunction<MqttMessage> implements Serializable {
     private static final Logger log = LoggerFactory.getLogger(MqttSourcePaho.class);
     private static final long serialVersionUID = -7193959421805098938L;
     private final String topic;
     private transient MqttClient client;
     private transient volatile boolean running;
     private final String broker;
-    private transient SourceContext<MyMqttMessage> ctx;
+    private transient SourceContext<MqttMessage> ctx;
     private final String userName;
     private final String password;
 
@@ -59,14 +59,14 @@ public class MqttSourcePaho extends RichSourceFunction<MyMqttMessage> implements
             }
 
             @Override
-            public void messageArrived(String topic, MqttMessage mqttMessage) {
+            public void messageArrived(String topic, org.eclipse.paho.client.mqttv3.MqttMessage mqttMessage) {
                 if (log.isDebugEnabled()) {
                     log.debug("接收消息主题:" + topic);
                     log.debug("接收消息Qos:" + mqttMessage.getQos());
                     log.debug("接收消息内容:\n" + new String(mqttMessage.getPayload()));
                 }
                 String payload = new String(mqttMessage.getPayload());
-                MyMqttMessage message = new MyMqttMessage(topic, payload);
+                MqttMessage message = new MqttMessage(topic, payload);
                 if (payload.equals("stop")) {
                     running = false;
                 }
@@ -92,7 +92,7 @@ public class MqttSourcePaho extends RichSourceFunction<MyMqttMessage> implements
     }
 
     @Override
-    public void run(SourceContext<MyMqttMessage> sourceContext) throws MqttException, InterruptedException {
+    public void run(SourceContext<MqttMessage> sourceContext) throws MqttException, InterruptedException {
         log.info("source run...");
 
         this.ctx = sourceContext;

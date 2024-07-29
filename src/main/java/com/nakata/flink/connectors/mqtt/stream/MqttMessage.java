@@ -3,17 +3,17 @@ package com.nakata.flink.connectors.mqtt.stream;
 
 import java.io.Serializable;
 
-public class MyMqttMessage implements Serializable {
+public class MqttMessage implements Serializable {
 
     private static final long serialVersionUID = -4673414704450588069L;
 
     private String topic;
     private String payload;
 
-    public MyMqttMessage() {
+    public MqttMessage() {
     }
 
-    public MyMqttMessage(String topic, String payload) {
+    public MqttMessage(String topic, String payload) {
         super();
         this.topic = topic;
         this.payload = payload;

@@ -22,7 +22,7 @@ public class MqttWordCount2MqttPaho {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         // get input data
-        DataStream<MyMqttMessage> text = env.addSource(new MqttSourcePaho(broker, username, password, topicIn, 0));
+        DataStream<MqttMessage> text = env.addSource(new MqttSourcePaho(broker, username, password, topicIn, 0));
 
         DataStream<Tuple2<String, Integer>> counts =
                 // split up the lines in pairs (2-tuples) containing: (word,1)
@@ -44,10 +44,10 @@ public class MqttWordCount2MqttPaho {
      * it into multiple pairs in the form of "(word,1)" (Tuple2<String, Integer>).
      */
     @SuppressWarnings("serial")
-    public static final class LineSplitter implements FlatMapFunction<MyMqttMessage, Tuple2<String, Integer>> {
+    public static final class LineSplitter implements FlatMapFunction<MqttMessage, Tuple2<String, Integer>> {
 
         @Override
-        public void flatMap(MyMqttMessage value, Collector<Tuple2<String, Integer>> out) {
+        public void flatMap(MqttMessage value, Collector<Tuple2<String, Integer>> out) {
             // normalize and split the line
             String[] tokens = value.getPayload().toLowerCase().split("\\W+");
 

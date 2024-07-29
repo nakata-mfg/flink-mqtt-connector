@@ -49,6 +49,14 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.26</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
   <properties>
     <scala.binary.version>2.12</scala.binary.version>
     <maven.compiler.target>${target.java.version}</maven.compiler.target>

@@ -1,6 +1,6 @@
 com/nakata/flink/connectors/mqtt/table/MqttSinkFunction.class
-com/nakata/flink/connectors/mqtt/stream/MyMqttMessage.class
 com/nakata/flink/connectors/mqtt/stream/MqttSourcePaho.class
+com/nakata/flink/connectors/mqtt/JsonConverter$1.class
 com/nakata/flink/connectors/mqtt/table/FlinkTableSourceSink.class
 com/nakata/flink/connectors/mqtt/stream/MqttSourcePaho$1.class
 com/nakata/flink/connectors/mqtt/table/MqttOptions.class
@@ -9,8 +9,10 @@ com/nakata/flink/connectors/mqtt/table/FlinkTableSourceSinkMultiCsv.class
 com/nakata/flink/connectors/mqtt/table/MqttDynamicTableSink.class
 com/nakata/flink/connectors/mqtt/stream/MqttWordCount2MqttPaho$LineSplitter.class
 com/nakata/flink/connectors/mqtt/table/MqttSourceFunction.class
+com/nakata/flink/connectors/mqtt/stream/MqttMessage.class
 com/nakata/flink/connectors/mqtt/table/MqttDynamicTableSource.class
 com/nakata/flink/connectors/mqtt/table/FlinkTableJustSource.class
+com/nakata/flink/connectors/mqtt/JsonConverter.class
 com/nakata/flink/connectors/mqtt/table/MqttDynamicTableFactory.class
 com/nakata/flink/connectors/mqtt/table/FlinkTableSourceSinkSingleCsv.class
 com/nakata/flink/connectors/mqtt/stream/MqttSinkPaho.class
