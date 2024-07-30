@@ -1,7 +1,12 @@
 package com.nakata.flink.connectors.mqtt.table;
 
+import org.apache.flink.api.common.functions.OpenContext;
 import org.apache.flink.api.common.serialization.DeserializationSchema;
+import org.apache.flink.api.common.serialization.RuntimeContextInitializationContextAdapters;
+import org.apache.flink.api.common.typeinfo.TypeInformation;
+import org.apache.flink.api.java.typeutils.ResultTypeQueryable;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
+import org.apache.flink.table.data.RowData;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
@@ -12,7 +17,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 
-public class MqttSourceFunction<T> extends RichSourceFunction<T> {
+public class MqttSourceFunction<T> extends RichSourceFunction<T> implements ResultTypeQueryable<T> {
     private static final Logger log = LoggerFactory.getLogger(MqttSourceFunction.class);
 
     private static final long serialVersionUID = 6241249297629516864L;
@@ -145,5 +150,18 @@ public class MqttSourceFunction<T> extends RichSourceFunction<T> {
         } catch (MqttException e) {
             log.error("断开连接异常", e);
         }
+    }
+
+    @Override
+    public TypeInformation<T> getProducedType() {
+        return deserializer.getProducedType();
+    }
+
+    @Override
+    public void open(OpenContext openContext) throws Exception {
+        super.open(openContext);
+        deserializer.open(
+                RuntimeContextInitializationContextAdapters.deserializationAdapter(
+                        getRuntimeContext()));
     }
 }

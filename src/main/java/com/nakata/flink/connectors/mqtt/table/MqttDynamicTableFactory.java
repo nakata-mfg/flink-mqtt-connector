@@ -11,6 +11,7 @@ import org.apache.flink.table.connector.sink.DynamicTableSink;
 import org.apache.flink.table.connector.source.DynamicTableSource;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.factories.*;
+import org.apache.flink.table.types.DataType;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,14 +33,16 @@ public class MqttDynamicTableFactory implements DynamicTableSourceFactory, Dynam
     public DynamicTableSource createDynamicTableSource(Context context) {
         //内置工具类校验传入参数
         FactoryUtil.TableFactoryHelper helper = createTableFactoryHelper(this, context);
-        helper.validate();
-        // 获取有效参数
-        final ReadableConfig options = helper.getOptions();
 
+        // discover a suitable decoding format
         final DecodingFormat<DeserializationSchema<RowData>> decodingFormat = helper.discoverDecodingFormat(
                 DeserializationFormatFactory.class,
                 FactoryUtil.FORMAT);
 
+        // validate all options
+        helper.validate();
+        // 获取有效参数
+        final ReadableConfig options = helper.getOptions();
 
         // 获取元数据信息
         ResolvedSchema resolvedSchema = context.getCatalogTable().getResolvedSchema();

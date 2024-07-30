@@ -5,6 +5,7 @@
 
 # 变更
 - 更新依赖至最新版本（兼容Flink 1.19.1）
+- 增加格式支持 (raw,csv,json)
 
 # 使用说明
 ## 支持的MQTT选项
@@ -54,7 +55,7 @@ $ mosquitto_pub -t test/mytopic -r -m {\"id\":3\,\"name\":\"ALLEN\"}
 $ mosquitto_pub -t test/mytopic -r -m {\"id\":4\,\"name\":\"Jack\"}
 ```
 
-2. __*Source采用json格式：NG!!*__
+2. Source采`json`格式：OK
 ```SQL
 CREATE TABLE source(
      id INT,
@@ -74,7 +75,7 @@ $ mosquitto_pub -t test/mytopic -r -m {\"id\":3\,\"name\":\"ALLEN\"}
 $ mosquitto_pub -t test/mytopic -r -m {\"id\":4\,\"name\":\"Jack\"}
 ```
 
-3. __*Source采用csv格式：NG！！*__
+3. Source采用csv格式：OK
 ```SQL
 CREATE TABLE source(
      id INT,
@@ -128,8 +129,8 @@ CREATE TABLE sink(
   'format' = 'json'
  );
 
-INSERT INTO sink (id,name) VALUES (1,"Jeen");
-INSERT INTO sink (id,name) VALUES ('1,"Jack"');
+INSERT INTO sink (id,name) VALUES(1,'Jeen');
+INSERT INTO sink (id,name) VALUES (1,'Jack');
 ```
 6. Sink采用`csv`格式：NG
 

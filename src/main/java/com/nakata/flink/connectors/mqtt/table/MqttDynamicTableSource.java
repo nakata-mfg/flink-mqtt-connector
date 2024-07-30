@@ -41,9 +41,11 @@ public class MqttDynamicTableSource implements ScanTableSource {
     //获取运行时类
     public ScanRuntimeProvider getScanRuntimeProvider(ScanContext ctx) {
 
+        // 创建运行时类用于提交给集群
         final DeserializationSchema<RowData> deserializer = decodingFormat.createRuntimeDecoder(
                 ctx,
                 schema.toPhysicalRowDataType());
+
         String broker = this.options.get(HOST_URL);
         String username = this.options.get(USERNAME);
         String password = this.options.get(PASSWORD);
@@ -53,7 +55,19 @@ public class MqttDynamicTableSource implements ScanTableSource {
         Integer connectionTimeout = this.options.get(CONNECTION_TIMEOUT);
         Integer keepAliveInterval = this.options.get(KEEP_ALIVE_INTERVAL);
         boolean automaticReconnect = this.options.get(AUTOMATIC_RECONNECT);
-        final SourceFunction<RowData> sourceFunction = new MqttSourceFunction<>(broker, username, password, topics, cleanSession, clientIdPrefix, automaticReconnect, connectionTimeout, keepAliveInterval, deserializer);
+
+        final SourceFunction<RowData> sourceFunction = new MqttSourceFunction<>(
+                broker,
+                username,
+                password,
+                topics,
+                cleanSession,
+                clientIdPrefix,
+                automaticReconnect,
+                connectionTimeout,
+                keepAliveInterval,
+                deserializer);
+
         return SourceFunctionProvider.of(sourceFunction, false);
     }
 
