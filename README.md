@@ -43,9 +43,9 @@ CREATE TABLE source(
 ```shell
               SQL Query Result (Table)
 Refresh: 1 s  Page: Last of 1 Updated: 14:09:44.125
-                   hfpower
+                   msg
 ---------------------------
-             {"hfpower":100}
+   {"id":3,"name":"ALLEN"}
 ```
 
 采用mosquitto作为消息broker，用mosquitto_pub手动更新消息
