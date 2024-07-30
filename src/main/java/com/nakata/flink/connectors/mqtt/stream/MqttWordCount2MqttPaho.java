@@ -47,9 +47,10 @@ public class MqttWordCount2MqttPaho {
     public static final class LineSplitter implements FlatMapFunction<MqttMessage, Tuple2<String, Integer>> {
 
         @Override
-        public void flatMap(MqttMessage value, Collector<Tuple2<String, Integer>> out) {
+        public void flatMap(MqttMessage mqttMsg, Collector<Tuple2<String, Integer>> out) {
             // normalize and split the line
-            String[] tokens = value.getPayload().toLowerCase().split("\\W+");
+            String payload = new String(mqttMsg.getPayload());
+            String[] tokens = payload.toLowerCase().split("\\W+");
 
             // emit the pairs
             for (String token : tokens) {

@@ -1,6 +1,7 @@
 package com.nakata.flink.connectors.mqtt.stream;
 
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
+import org.apache.flink.types.RowKind;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
@@ -66,7 +67,7 @@ public class MqttSourcePaho extends RichSourceFunction<MqttMessage> implements S
                     log.debug("接收消息内容:\n" + new String(mqttMessage.getPayload()));
                 }
                 String payload = new String(mqttMessage.getPayload());
-                MqttMessage message = new MqttMessage(topic, payload);
+                MqttMessage message = new MqttMessage(topic, mqttMessage.getQos(),mqttMessage.getPayload(), RowKind.INSERT);
                 if (payload.equals("stop")) {
                     running = false;
                 }
