@@ -30,7 +30,7 @@
 1. Source采用raw格式： OK
 ```SQL
 CREATE TABLE source(
- hfpower STRING
+ msg STRING
  ) WITH(
  'connector' = 'mqtt',
  'hostUrl' = 'tcp://localhost:1883',
