@@ -1,6 +1,10 @@
 package com.nakata.flink.connectors.mqtt.table;
 
+import org.apache.flink.api.common.eventtime.Watermark;
+import org.apache.flink.api.common.functions.OpenContext;
 import org.apache.flink.api.common.serialization.SerializationSchema;
+import org.apache.flink.api.common.typeinfo.TypeInformation;
+import org.apache.flink.api.java.typeutils.ResultTypeQueryable;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -63,7 +67,7 @@ public class MqttSinkFunction<T> extends RichSinkFunction<T> {
         }
     }
 
-    @Override
+      @Override
     public void close() throws Exception {
         log.info("sink close...");
         super.close();

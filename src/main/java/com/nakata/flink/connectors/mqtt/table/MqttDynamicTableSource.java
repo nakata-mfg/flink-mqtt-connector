@@ -46,7 +46,7 @@ public class MqttDynamicTableSource implements ScanTableSource {
                 ctx,
                 schema.toPhysicalRowDataType());
 
-        String broker = this.options.get(HOST_URL);
+        String hostUrl = this.options.get(HOST_URL);
         String username = this.options.get(USERNAME);
         String password = this.options.get(PASSWORD);
         String topics = this.options.get(SOURCE_TOPICS);
@@ -57,7 +57,7 @@ public class MqttDynamicTableSource implements ScanTableSource {
         boolean automaticReconnect = this.options.get(AUTOMATIC_RECONNECT);
 
         final SourceFunction<RowData> sourceFunction = new MqttSourceFunction<>(
-                broker,
+                hostUrl,
                 username,
                 password,
                 topics,
