@@ -1,25 +1,20 @@
 forked from [StoneForests/flink-mqtt-connector](https://github.com/StoneForests/flink-mqtt-connector  "StoneForests/flink-mqtt-connector")
 
-[中文](README-zh.md "中文")
+[English](README.md "English")  
 
 # flink-mqtt-connector
- Use flink 1.19.1 and [Eclipse Paho MQTT Java Client](https://github.com/eclipse/paho.mqtt.java "Eclipse Paho MQTT Java Client" ) 
- to realize a user-defined flinn mqtt api including table api and stream api. 
- It is able to read or write message via MQTT broker.
-The usage of stream api can refer to MqttWordCount2MqttPaho.java, 
- while table api has to entries, one is for read-only in FlinkTableJustSource.java,
- the other is for read-write in FlinkTableSourceSink.java.
-The principle  refers to https://blog.csdn.net/lck_csdn/article/details/125445017. 
- Thanks for the original authors.
+ 使用flink1.14.3和paho mqtt客户端实现的自定义flink mqtt connector，分别使用table api和stream api进行了实现，可以从mqtt执行读取数据，写入数据。
+ stream api的入口在MqttWordCount2MqttPaho.java，table api有两个入口，其中只读mqtt的入口是FlinkTableJustSource.java，又读又写mqtt的是FlinkTableSourceSink.java。
+ 原理见https://blog.csdn.net/lck_csdn/article/details/125445017， 感谢原文作者！
 
-# Changes
-- Update to latest Flink 1.19.1
-- Add format support(raw,csv,json)
+# 变更
+- 更新依赖至最新版本（兼容Flink 1.19.1）
+- 增加格式支持 (raw,csv,json)
 
-# How to use
-## Supported MQTT options
+# 使用说明
+## 支持的MQTT选项
 ```python
-'connector' = 'mqtt', # connector name
+'connector' = 'mqtt', # 指定工厂类的标识符，该标识符就是建表时必须填写的connector参数的值
 'hostUrl' = 'tcp://localhost:1883', # the mqtt's connect host url. string, no default value
 'uername' = '',     # the mqtt's connect username. string, no default value
 'password' = '',    # the mqtt's connect password. string, no default value
@@ -32,12 +27,12 @@ The principle  refers to https://blog.csdn.net/lck_csdn/article/details/12544501
 'connectionTimeout' = '30', # the mqtt's connect timeout. int,default is 30
 'keepAliveInterval' = '60', # the mqtt's connect keep alive interval, int, default is 60
 'sinkParallelism' = '1', # the mqtt's sink parallelism. int, default is 1.
-'format' = 'raw', # refer to Flink document. 
+'format' = 'raw', # 数据格式，参照Flink文档。 
 ```
 
-## Examples
+## 使用例子
 #### Flink SQL (sql-client.sh)
-1. Source use `raw` format： OK
+1. Source采用raw格式： OK
 ```SQL
 CREATE TABLE source(
  msg STRING
@@ -58,13 +53,13 @@ Refresh: 1 s  Page: Last of 1 Updated: 14:09:44.125
    {"id":3,"name":"ALLEN"}
 ```
 
-Here use `mosquitto` as message broker, and use command `mosquitto_pub` to publish message manually.
+采用mosquitto作为消息broker，用mosquitto_pub手动更新消息
 ```bash
 $ mosquitto_pub -t test/mytopic -r -m {\"id\":3\,\"name\":\"ALLEN\"}
 $ mosquitto_pub -t test/mytopic -r -m {\"id\":4\,\"name\":\"Jack\"}
 ```
 
-2. Source use `json` foramt：OK
+2. Source采`json`格式：OK
 ```SQL
 CREATE TABLE source(
      id INT,
@@ -84,7 +79,7 @@ $ mosquitto_pub -t test/mytopic -r -m {\"id\":3\,\"name\":\"ALLEN\"}
 $ mosquitto_pub -t test/mytopic -r -m {\"id\":4\,\"name\":\"Jack\"}
 ```
 
-3. Source use `csv`：OK
+3. Source采用csv格式：OK
 ```SQL
 CREATE TABLE source(
      id INT,
@@ -104,9 +99,9 @@ $ mosquitto_pub -t test/mytopic -r -m 4\,\"Jack\"
 ```
 
 
-4. Sink use `raw` format:OK
+4. Sink采用`raw`格式:OK
 
-__*Note：The 'raw' format only supports single physical column.*__
+__*注意：The 'raw' format only supports single physical column.*__
 
 ```SQL
 CREATE TABLE sink (
@@ -123,7 +118,7 @@ CREATE TABLE sink (
 INSERT INTO sink (id_name) VALUES ('1,"Jack"');
 ```
 
-5. Sink use`json` format：NG 
+5. Sink采用`json`格式：NG 
 
 ```SQL
 CREATE TABLE sink(
@@ -141,7 +136,7 @@ CREATE TABLE sink(
 INSERT INTO sink (id,name) VALUES(1,'Jeen');
 INSERT INTO sink (id,name) VALUES (1,'Jack');
 ```
-6. Sink use`csv` format：NG
+6. Sink采用`csv`格式：NG
 
 ```SQL
 CREATE TABLE sink(
@@ -160,15 +155,13 @@ INSERT INTO sink (id,name) VALUES ('1,"Jeen"');
 INSERT INTO sink (id,name) VALUES (''1,"Jack"');
 ```
 
-### Use PyFlink Table API
+### 使用PyFlink Table API
 
-### Use PyFlink Stream API
+### 使用PyFlink Stream API
 
 
 
-Note: Currently `sink` can only use format `raw` but not formats such as `json`,`csv`. 
-Alternatively, temporarily use `JSON_OBJECT` function to write  `json` data in `raw` format.
-
+Note: 当前`sink`不能直接用`raw`以外的诸如`json`,`csv`等格式，作为代替方法，暂时用`JSON_OBJECT`方法按照`raw`写入。
 ```python
 # filename: m66.py
 
@@ -224,8 +217,6 @@ query_sql = "INSERT INTO sink SELECT JSON_OBJECT('id' VALUE id+1, 'name' VALUE R
 tab_env.execute_sql(query_sql).wait()
 
 ```
-The above example will read data `id,name` from topic `test/topic` in format `json`, 
-then write back `id,name` after increasing `id+1` and reversing `name` to the same topic.
-Therefore, it is an infinite loop. 
+上面的例子会从`test/topic`按照`json`格式读如`id,name`，然后`id+1`以及逆顺后的`name`写会同topic。
 
 == END ==
