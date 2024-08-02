@@ -158,9 +158,64 @@ INSERT INTO sink (id,name) VALUES (2,'Jack');
 ```
 
 ### 使用PyFlink Table API
+```python
+# filename: m66.py
+
+from pyflink.datastream import StreamExecutionEnvironment
+from pyflink.table import StreamTableEnvironment, EnvironmentSettings
+
+env = StreamExecutionEnvironment.get_execution_environment()
+settings = EnvironmentSettings.new_instance().in_streaming_mode().build()
+# create table environment
+tab_env = StreamTableEnvironment.create(stream_execution_environment=env,environment_settings=settings)
+# Add Kafka connector and dependencies
+jar_dir = "/home/yin/flink-1.19.1/lib/"
+jar_files=["flink-mqtt-connector-0.0.1.jar"]
+jar_files = ";".join(["file://" + jar_dir+ x for x in jar_files])
+print(jar_files)
+tab_env.get_config().set("pipeline.jars",jar_files)
+
+#######################################################################
+# Create MQTT Source Table with DDL
+#######################################################################
+source_ddl = """
+CREATE TABLE source(
+ id INTEGER,
+ name STRING
+ ) WITH(
+ 'connector' = 'mqtt',
+ 'hostUrl' = 'tcp://localhost:1883',
+ 'username' = '',
+ 'password' = '',
+ 'sourceTopics' = 'test/mytopic',
+ 'format' = 'json'
+ );
+"""
+
+sink_ddl = """
+CREATE TABLE sink (
+     json_result STRING
+ ) WITH (
+  'connector' = 'mqtt',
+  'hostUrl' = 'tcp://localhost:1883',
+  'username' = '',
+  'password' = '',
+  'sinkTopics' = 'test/mytopic',
+  'format' = 'raw'
+ );
+"""
+
+tab_env.execute_sql(source_ddl)
+tab_env.execute_sql(sink_ddl)
+
+query_sql = "INSERT INTO sink SELECT JSON_OBJECT('id' VALUE id+1, 'name' VALUE REVERSE(name)) FROM source"
+
+tab_env.execute_sql(query_sql).wait()
+
+```
 
 ### 使用PyFlink Stream API
-
+(to-do)需要为Stream API写一个python wrapper。
 
 
 Note: 作为代替方法，也可以用`JSON_OBJECT`方法按照`raw`写入。
