@@ -95,6 +95,7 @@ public class MqttSinkFunction<T> extends RichSinkFunction<T> {
         //自动重新连接，默认为false
         options.setAutomaticReconnect(this.automaticReconnect);
         this.client.connect(options);
+        this.serializer.open(null);
     }
 
 

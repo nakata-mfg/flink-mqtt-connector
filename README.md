@@ -123,7 +123,7 @@ CREATE TABLE sink (
 INSERT INTO sink (id_name) VALUES ('1,"Jack"');
 ```
 
-5. Sink use`json` format：NG 
+5. Sink use`json` format：OK
 
 ```SQL
 CREATE TABLE sink(
@@ -139,9 +139,9 @@ CREATE TABLE sink(
  );
 
 INSERT INTO sink (id,name) VALUES(1,'Jeen');
-INSERT INTO sink (id,name) VALUES (1,'Jack');
+INSERT INTO sink (id,name) VALUES (2,'Jack');
 ```
-6. Sink use`csv` format：NG
+6. Sink use`csv` format：OK
 
 ```SQL
 CREATE TABLE sink(
@@ -156,8 +156,8 @@ CREATE TABLE sink(
   'format' = 'csv'
  );
 
-INSERT INTO sink (id,name) VALUES ('1,"Jeen"');
-INSERT INTO sink (id,name) VALUES (''1,"Jack"');
+INSERT INTO sink (id,name) VALUES(1,'Jeen');
+INSERT INTO sink (id,name) VALUES (2,'Jack');
 ```
 
 ### Use PyFlink Table API
