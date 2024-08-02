@@ -12,6 +12,27 @@ forked from [StoneForests/flink-mqtt-connector](https://github.com/StoneForests/
 - 增加格式支持 (raw,csv,json)
 
 # 使用说明
+## 编译与部署
+- 编译环境要求
+```bash
+$ java -version
+openjdk version "11.0.23" 2024-04-16
+OpenJDK Runtime Environment (build 11.0.23+9-post-Ubuntu-1ubuntu122.04.1)
+OpenJDK 64-Bit Server VM (build 11.0.23+9-post-Ubuntu-1ubuntu122.04.1, mixed mode, sharing)
+$ mvn -version
+Apache Maven 3.6.3
+Maven home: /usr/share/maven
+Java version: 11.0.23, vendor: Ubuntu, runtime: /usr/lib/jvm/java-11-openjdk-amd64
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "6.5.0-44-generic", arch: "amd64", family: "unix"
+ ```
+- 编译
+
+> mvn clean package
+
+在文件夹`target`下,可以找到生成的jar包 `flink-mqtt-connector-x.y.z.jar`.
+将其拷贝至`flink/lib/`下以及`pyfinkenv/lib/python3.10/site-packages/pyflink/lib/`(可选).
+
 ## 支持的MQTT选项
 ```python
 'connector' = 'mqtt', # 指定工厂类的标识符，该标识符就是建表时必须填写的connector参数的值

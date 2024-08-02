@@ -17,6 +17,27 @@ The principle  refers to https://blog.csdn.net/lck_csdn/article/details/12544501
 - Add format support(raw,csv,json)
 
 # How to use
+## Compile and deploy
+- Requiremetns
+```bash
+$ java -version
+openjdk version "11.0.23" 2024-04-16
+OpenJDK Runtime Environment (build 11.0.23+9-post-Ubuntu-1ubuntu122.04.1)
+OpenJDK 64-Bit Server VM (build 11.0.23+9-post-Ubuntu-1ubuntu122.04.1, mixed mode, sharing)
+$ mvn -version
+Apache Maven 3.6.3
+Maven home: /usr/share/maven
+Java version: 11.0.23, vendor: Ubuntu, runtime: /usr/lib/jvm/java-11-openjdk-amd64
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "6.5.0-44-generic", arch: "amd64", family: "unix"
+ ```
+- compile
+
+> mvn clean package
+
+Under folder `target`, you will find generated package flink-mqtt-connector-x.y.z.jar. 
+Copy the jar file to flink/lib/ and pyfinkenv/lib/python3.10/site-packages/pyflink/lib/(optional).
+
 ## Supported MQTT options
 ```python
 'connector' = 'mqtt', # connector name
@@ -282,5 +303,10 @@ tab_env.execute_sql(query_sql).wait()
 The above example will read data `id,name` from topic `test/topic` in format `json`, 
 then write back `id,name` after increasing `id+1` and reversing `name` to the same topic.
 Therefore, it is an infinite loop. 
+
+### how to run
+> $ ~/flink-1.19.1/bin/flink run --detached --python xx.py
+
+
 
 == END ==
