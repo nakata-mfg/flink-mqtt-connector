@@ -166,8 +166,7 @@ INSERT INTO sink (id,name) VALUES (2,'Jack');
 
 
 
-Note: Currently `sink` can only use format `raw` but not formats such as `json`,`csv`. 
-Alternatively, temporarily use `JSON_OBJECT` function to write  `json` data in `raw` format.
+Note: As an alternative method, we can use `JSON_OBJECT` function to write  `json` data in `raw` format.
 
 ```python
 # filename: m66.py

@@ -118,7 +118,7 @@ CREATE TABLE sink (
 INSERT INTO sink (id_name) VALUES ('1,"Jack"');
 ```
 
-5. Sink采用`json`格式：NG 
+5. Sink采用`json`格式：OK
 
 ```SQL
 CREATE TABLE sink(
@@ -134,9 +134,10 @@ CREATE TABLE sink(
  );
 
 INSERT INTO sink (id,name) VALUES(1,'Jeen');
-INSERT INTO sink (id,name) VALUES (1,'Jack');
+INSERT INTO sink (id,name) VALUES (2,'Jack');
+
 ```
-6. Sink采用`csv`格式：NG
+6. Sink采用`csv`格式：OK
 
 ```SQL
 CREATE TABLE sink(
@@ -151,8 +152,9 @@ CREATE TABLE sink(
   'format' = 'csv'
  );
 
-INSERT INTO sink (id,name) VALUES ('1,"Jeen"');
-INSERT INTO sink (id,name) VALUES (''1,"Jack"');
+INSERT INTO sink (id,name) VALUES(1,'Jeen');
+INSERT INTO sink (id,name) VALUES (2,'Jack');
+
 ```
 
 ### 使用PyFlink Table API
@@ -161,7 +163,7 @@ INSERT INTO sink (id,name) VALUES (''1,"Jack"');
 
 
 
-Note: 当前`sink`不能直接用`raw`以外的诸如`json`,`csv`等格式，作为代替方法，暂时用`JSON_OBJECT`方法按照`raw`写入。
+Note: 作为代替方法，也可以用`JSON_OBJECT`方法按照`raw`写入。
 ```python
 # filename: m66.py
 
