@@ -13,6 +13,9 @@
 dependency-reduced-pom.xml
 */target
 target
+/target/
+/*.iml
+*.log
 # Package Files #
 *.jar
 *.war
