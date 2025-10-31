@@ -6,7 +6,7 @@
 
     <groupId>com.nakata.yinjilong</groupId>
     <artifactId>flink-mqtt-connector</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <packaging>jar</packaging>
     <name>Flink MQTT Connector</name>
 
@@ -16,7 +16,7 @@
         <scala.binary.version>2.12</scala.binary.version>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
-        <flink.version>1.19.1</flink.version>
+        <flink.version>1.20.3</flink.version>
     </properties>
 
     <!--打包到线上的时候需要排队掉flink相关的依赖，避免生成的jar包过大，请使用下述dependencies-->
