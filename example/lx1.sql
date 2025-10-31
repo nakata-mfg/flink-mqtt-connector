@@ -29,8 +29,8 @@ src STRING,
 );
 
 SET 'pipeline.name' = 'BD1-UpperRoll-Load-Threshold-UB-check';
-INSERT INTO sink SELECT 3 AS level ,20225 AS code , 'lx6' AS src, DATE_FORMAT(CURRENT_TIMESTAMP, 'yyyy-MM-dd''T''HH:mm:ss') AS `time`  FROM source WHERE floatVal>1.0;
+INSERT INTO sink SELECT 3 AS level ,20225 AS code , 'lx1' AS src, DATE_FORMAT(CURRENT_TIMESTAMP, 'yyyy-MM-dd''T''HH:mm:ss') AS `time`  FROM source WHERE floatVal>1.0;
 
 SET 'pipeline.name' = 'BD1-UpperRoll-Load-Threshold-LB-check';
-INSERT INTO sink SELECT 5 AS level ,20226 AS code , 'lx6' AS src, DATE_FORMAT(CURRENT_TIMESTAMP, 'yyyy-MM-dd''T''HH:mm:ss') AS `time`  FROM source WHERE floatVal<-1.0;
+INSERT INTO sink SELECT 5 AS level ,20226 AS code , 'lx1' AS src, DATE_FORMAT(CURRENT_TIMESTAMP, 'yyyy-MM-dd''T''HH:mm:ss') AS `time`  FROM source WHERE floatVal<-1.0;
 
