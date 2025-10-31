@@ -6,7 +6,7 @@ import org.apache.flink.api.common.serialization.RuntimeContextInitializationCon
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.typeutils.ResultTypeQueryable;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
-import org.apache.flink.table.data.RowData;
+
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+
 
 
 public class MqttSourceFunction<T> extends RichSourceFunction<T> implements ResultTypeQueryable<T> {
@@ -36,10 +38,12 @@ public class MqttSourceFunction<T> extends RichSourceFunction<T> implements Resu
     private final boolean cleanSession;
     private final Integer connectionTimeout;
     private final Integer keepAliveInterval;
+    private final Integer maxInflight;
+    private final Long pollInterval;
     //存储订阅主题
     private final DeserializationSchema<T> deserializer;
 
-    public MqttSourceFunction(String hostUrl, String username, String password, String topics, boolean cleanSession, String clientIdPrefix, boolean automaticReconnect, Integer connectionTimeout, Integer keepAliveInterval, DeserializationSchema<T> deserializer) {
+    public MqttSourceFunction(String hostUrl, String username, String password, String topics, boolean cleanSession, String clientIdPrefix, boolean automaticReconnect, Integer connectionTimeout, Integer keepAliveInterval, Integer maxInflight, Long pollInterval, DeserializationSchema<T> deserializer) {
         this.topics = topics;
         this.hostUrl = hostUrl;
         this.username = username;
@@ -49,6 +53,8 @@ public class MqttSourceFunction<T> extends RichSourceFunction<T> implements Resu
         this.automaticReconnect = automaticReconnect;
         this.connectionTimeout = connectionTimeout;
         this.keepAliveInterval = keepAliveInterval;
+        this.maxInflight = maxInflight;
+        this.pollInterval = pollInterval;
         this.deserializer = deserializer;
     }
 
@@ -67,6 +73,7 @@ public class MqttSourceFunction<T> extends RichSourceFunction<T> implements Resu
         // 设置会话心跳时间
         options.setKeepAliveInterval(this.keepAliveInterval);
         options.setAutomaticReconnect(this.automaticReconnect);
+        options.setMaxInflight(this.maxInflight);
 
         String[] topics = this.topics.split(",");
         //订阅消息
@@ -94,7 +101,7 @@ public class MqttSourceFunction<T> extends RichSourceFunction<T> implements Resu
                 try {
                     deserialize = deserializer.deserialize(mqttMessage.getPayload());
                 } catch (Exception e) {
-                    log.error("反序列化mqtt消息异常，消息内容【{}】", mqttMessage.getPayload(), e);
+                    log.error("反序列化mqtt消息异常，消息内容【{}】", new String(mqttMessage.getPayload()), e);
                     return;
                 }
                 try {
@@ -133,8 +140,13 @@ public class MqttSourceFunction<T> extends RichSourceFunction<T> implements Resu
         connect();
         //利用死循环使得程序一直监控主题是否有新消息
         while (this.running) {
+            //下面这段在实际运行时有问题，会导致flink job点退出后但队列仍然在阻塞导致flink任务无法结束，因此改成poll循环
             //使用阻塞队列的好处是队列空的时候程序会一直阻塞到这里不会浪费CPU资源
-            ctx.collect(this.queue.take());
+            //ctx.collect(this.queue.take());
+            T ele = this.queue.poll(this.pollInterval, TimeUnit.MILLISECONDS);
+            if (ele != null){
+                ctx.collect(ele);
+            }
         }
     }
 

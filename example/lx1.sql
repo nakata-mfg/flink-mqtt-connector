@@ -9,7 +9,7 @@ CREATE TABLE source(
  'hostUrl' = 'tcp://localhost:1883',
  'username' = '',
  'password' = '',
- 'sourceTopics' = 'FFX/BD1/UpperRoll/Load',
+ 'topics' = 'FFX/BD1/UpperRoll/Load',
   'format' = 'json'
  );
 
@@ -24,7 +24,7 @@ src STRING,
 'hostUrl' = 'tcp://localhost:1883',
 'username' = '',
 'password' = '',
-'sinkTopics' = 'ALARM',
+'topics' = 'ALARM',
 'format' = 'json'
 );
 
