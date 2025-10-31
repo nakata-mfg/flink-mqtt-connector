@@ -9,14 +9,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 
-public class MqttSourcePaho extends RichSourceFunction<MqttMessage> implements Serializable {
+public class MqttSourcePaho extends RichSourceFunction<com.nakata.flink.connectors.mqtt.comon.MqttMessage> implements Serializable {
     private static final Logger log = LoggerFactory.getLogger(MqttSourcePaho.class);
     private static final long serialVersionUID = -7193959421805098938L;
     private final String topic;
     private transient MqttClient client;
     private transient volatile boolean running;
     private final String broker;
-    private transient SourceContext<MqttMessage> ctx;
+    private transient SourceContext<com.nakata.flink.connectors.mqtt.comon.MqttMessage> ctx;
     private final String userName;
     private final String password;
 
@@ -67,7 +67,7 @@ public class MqttSourcePaho extends RichSourceFunction<MqttMessage> implements S
                     log.debug("接收消息内容:\n" + new String(mqttMessage.getPayload()));
                 }
                 String payload = new String(mqttMessage.getPayload());
-                MqttMessage message = new MqttMessage(topic, mqttMessage.getQos(),mqttMessage.getPayload(), RowKind.INSERT);
+                com.nakata.flink.connectors.mqtt.comon.MqttMessage message = new com.nakata.flink.connectors.mqtt.comon.MqttMessage(topic, mqttMessage.getQos(),mqttMessage.getPayload(), RowKind.INSERT);
                 if (payload.equals("stop")) {
                     running = false;
                 }
@@ -93,7 +93,7 @@ public class MqttSourcePaho extends RichSourceFunction<MqttMessage> implements S
     }
 
     @Override
-    public void run(SourceContext<MqttMessage> sourceContext) throws MqttException, InterruptedException {
+    public void run(SourceContext<com.nakata.flink.connectors.mqtt.comon.MqttMessage> sourceContext) throws MqttException, InterruptedException {
         log.info("source run...");
 
         this.ctx = sourceContext;

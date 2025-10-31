@@ -1,4 +1,4 @@
-package com.nakata.flink.connectors.mqtt.stream;
+package com.nakata.flink.connectors.mqtt.comon;
 
 
 import lombok.Data;
