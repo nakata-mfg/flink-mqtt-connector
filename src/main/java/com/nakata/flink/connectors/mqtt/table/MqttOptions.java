@@ -19,13 +19,13 @@ public class MqttOptions {
     public static final ConfigOption<String> USERNAME =
             ConfigOptions.key("username")
                     .stringType()
-                    .noDefaultValue()
+                    .defaultValue("")
                     .withDescription("the mqtt's connect username.");
 
     public static final ConfigOption<String> PASSWORD =
             ConfigOptions.key("password")
                     .stringType()
-                    .noDefaultValue()
+                    .defaultValue("")
                     .withDescription("the mqtt's connect password.");
 
     public static final ConfigOption<String> TOPICS =
