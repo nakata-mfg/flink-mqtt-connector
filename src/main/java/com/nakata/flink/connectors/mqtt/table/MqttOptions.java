@@ -82,6 +82,12 @@ public class MqttOptions {
                     .defaultValue(60)
                     .withDescription("the mqtt's connect keep alive interval.");
 
+    public static final ConfigOption<String> JSON_FIELD_MAPPING =
+            ConfigOptions.key("json.field.mapping")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription("Mapping from JSON field to table column, e.g., jsonField:columnName");
+
 //    public static final ConfigOption<Integer> SINK_PARALLELISM =
 //            ConfigOptions.key("sinkParallelism")
 //                    .intType()

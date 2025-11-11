@@ -12,6 +12,9 @@ import org.apache.flink.table.connector.source.SourceFunctionProvider;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.types.RowKind;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.nakata.flink.connectors.mqtt.table.MqttOptions.*;
 
 public class MqttDynamicTableSource implements ScanTableSource {
@@ -46,6 +49,17 @@ public class MqttDynamicTableSource implements ScanTableSource {
                 ctx,
                 schema.toPhysicalRowDataType());
 
+        final String mappingStr = options.get(MqttOptions.JSON_FIELD_MAPPING);
+        final Map<String, String> jsonFieldMapping = new HashMap<>();
+        if (mappingStr != null && !mappingStr.isEmpty()) {
+            for (String entry : mappingStr.split(",")) {
+                String[] kv = entry.split(":");
+                if (kv.length == 2) {
+                    jsonFieldMapping.put(kv[0].trim(), kv[1].trim());
+                }
+            }
+        }
+
         String broker = this.options.get(HOST_URL);
         String username = this.options.get(USERNAME);
         String password = this.options.get(PASSWORD);
@@ -57,7 +71,7 @@ public class MqttDynamicTableSource implements ScanTableSource {
         boolean automaticReconnect = this.options.get(AUTOMATIC_RECONNECT);
         Integer maxInflight = this.options.get(MAX_INFLIGHT);
         Long pollInterval = this.options.get(POLL_INTERVAL);
-        final SourceFunction<RowData> sourceFunction = new MqttSourceFunction<>(broker, username, password, topics, cleanSession, clientIdPrefix, automaticReconnect, connectionTimeout, keepAliveInterval, maxInflight, pollInterval, deserializer);
+        final SourceFunction<RowData> sourceFunction = new MqttSourceFunction<>(broker, username, password, topics, cleanSession, clientIdPrefix, automaticReconnect, connectionTimeout, keepAliveInterval, maxInflight, pollInterval, deserializer,jsonFieldMapping);
         return SourceFunctionProvider.of(sourceFunction, false);
     }
 

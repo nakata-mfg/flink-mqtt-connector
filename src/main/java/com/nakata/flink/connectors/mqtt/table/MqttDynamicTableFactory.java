@@ -104,6 +104,7 @@ public class MqttDynamicTableFactory implements DynamicTableSourceFactory, Dynam
         options.add(SINK_PARALLELISM);
         options.add(MAX_INFLIGHT);
         options.add(POLL_INTERVAL);
+        options.add(JSON_FIELD_MAPPING);
         return options;
     }
 
