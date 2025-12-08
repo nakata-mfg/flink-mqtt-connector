@@ -340,6 +340,14 @@ Therefore, it is an infinite loop.
 
 
 
+# Known issues
 
+- json.field.mapping
+  
+  - can not json field mapping when mutli topics have same field names.
+  
+  - logical field can not exist as NULL when physical field in json message doesn't exist if using json.field.mapping. In the other words, if not using json.field.mapping, the logical field will be set to NULL when relavant physical field doesn't exist in json message.
+  
+  - 
 
 ==  END  ==
