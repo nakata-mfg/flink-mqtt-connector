@@ -69,6 +69,25 @@ The principle  refers to https://blog.csdn.net/lck_csdn/article/details/12544501
 'json.field.mapping' = 'tableFieldName:jsonFieldName' #support multiple mapping, use comma(,) as seperator 
 ```
 
+e.g.
+
+```sql
+CREATE TABLE source(
+    pv  FLOAT,
+    `time` TIMESTAMP_LTZ(3),
+    WATERMARK FOR `time` AS `time` - INTERVAL '5' SECOND
+) WITH (
+    'connector' = 'mqtt',
+    'hostUrl' = 'tcp://localhost:1883',
+    'topics' = 'FFX/BD1/UpperRoll/Load',
+    'format' = 'json',
+    'json.timestamp-format.standard' = 'ISO-8601',
+    'json.field.mapping' = 'pv:floatVal'
+);
+```
+
+
+
 ## Examples
 
 #### Flink SQL (sql-client.sh)
@@ -203,6 +222,8 @@ CREATE TABLE sink(
 INSERT INTO sink (id,name) VALUES(1,'Jeen');
 INSERT INTO sink (id,name) VALUES (2,'Jack');
 ```
+
+
 
 ### Use PyFlink Table API
 
@@ -347,7 +368,7 @@ Therefore, it is an infinite loop.
   - can not json field mapping when mutli topics have same field names.
   
   - logical field can not exist as NULL when physical field in json message doesn't exist if using json.field.mapping. In the other words, if not using json.field.mapping, the logical field will be set to NULL when relavant physical field doesn't exist in json message.
-  
-  - 
+    
+    
 
 ==  END  ==
