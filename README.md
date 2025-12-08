@@ -40,6 +40,7 @@ The principle  refers to https://blog.csdn.net/lck_csdn/article/details/12544501
   Default locale: en_US, platform encoding: UTF-8
   OS name: "linux", version: "6.5.0-44-generic", arch: "amd64", family: "unix"
   ```
+
 - compile
 
 > mvn clean package
@@ -85,8 +86,6 @@ CREATE TABLE source(
     'json.field.mapping' = 'pv:floatVal'
 );
 ```
-
-
 
 ## Examples
 
@@ -223,8 +222,6 @@ INSERT INTO sink (id,name) VALUES(1,'Jeen');
 INSERT INTO sink (id,name) VALUES (2,'Jack');
 ```
 
-
-
 ### Use PyFlink Table API
 
 ```python
@@ -359,7 +356,67 @@ Therefore, it is an infinite loop.
 
 > $ ~/flink-1.19.1/bin/flink run --detached --python xx.py
 
+## Dynamic threshold model example
 
+The following provides a threshold model, Here, one table from mqtt message holds the present value(pv),the other table holds the threshold(UB and LB). The threshold value needs to be changed accordint to situations.
+
+- To join the two table, add a field `id` for each table.
+
+- As the `id` doesn't exist in json message, its value will be NULL and therefor can not be used to join directly.
+
+- Using function `COALESCE` on `id` when join may solve the problem
+
+```sql
+CREATE TABLE source(
+    id INT,
+    pv  FLOAT,
+    `time` TIMESTAMP_LTZ(3),
+    WATERMARK FOR `time` AS `time` - INTERVAL '5' SECOND
+) WITH (
+    'connector' = 'mqtt',
+    'hostUrl' = 'tcp://localhost:1883',
+    'topics' = 'FFX/BD1/UpperRoll/Load',
+    'format' = 'json',
+    'json.timestamp-format.standard' = 'ISO-8601',
+    'json.field.mapping' = 'pv:floatVal'
+);
+
+
+CREATE TABLE threshold(
+    id INTEGER,
+    UB FLOAT,
+    LB FLOAT,
+    `time` TIMESTAMP_LTZ(3),
+   WATERMARK FOR `time` AS `time` - INTERVAL '5' SECOND
+) WITH (
+    'connector' = 'mqtt',
+    'hostUrl' = 'tcp://localhost:1883',
+    'topics' = 'ALARM/PARAMETER/FFX/BD1/UpperRoll/Load/Threshold',
+    'format' = 'json'
+);
+
+CREATE TABLE sink(
+    level INTEGER,
+    code INTEGER,
+    src STRING,
+    `time` TIMESTAMP_LTZ(3)
+) WITH (
+    'connector' = 'mqtt',
+    'hostUrl' = 'tcp://localhost:1883',
+    'topics' = 'ALARM/OUTPUT',
+    'format' = 'json'
+);
+
+SET 'pipeline.name' = 'BD1-UpperRoll-Force-threshold_check';
+INSERT INTO sink 
+SELECT
+    1 AS level,
+    33281 AS code,
+    'BD1_UpperRoll' AS src,
+    CURRENT_TIMESTAMP AS `time`
+JOIN threshold as t 
+ON COALESCE(s.id,1)=COALESCE(t.id,1) WHERE s.pv > t.UB;
+```
 
 # Known issues
 
@@ -368,7 +425,5 @@ Therefore, it is an infinite loop.
   - can not json field mapping when mutli topics have same field names.
   
   - logical field can not exist as NULL when physical field in json message doesn't exist if using json.field.mapping. In the other words, if not using json.field.mapping, the logical field will be set to NULL when relavant physical field doesn't exist in json message.
-    
-    
 
 ==  END  ==
