@@ -21,6 +21,7 @@ The principle  refers to https://blog.csdn.net/lck_csdn/article/details/12544501
 - Support field mapping to rename field name
 - Treat as anonymous when username and password are not provided
 - Support embedded json
+- Support json filed and const field mapping 
 
 # How to use
 
@@ -67,7 +68,7 @@ The principle  refers to https://blog.csdn.net/lck_csdn/article/details/12544501
 'sinkParallelism' = '1', # the mqtt's sink parallelism. int, default is 1.
 'format' = 'raw', # refer to Flink document. support json,raw,csv.
 'json.timestamp-format.standard' = 'ISO-8601', # timestamp format
-'json.field.mapping' = 'tableFieldName:jsonFieldName' #support multiple mapping, use comma(,) as seperator 
+'json.field.mapping' = 'tableFieldName:jsonFieldName,tableFieldName=constValue' #support multiple mapping(:) and const value mapping(=), use comma(,) as seperator 
 ```
 
 e.g.

@@ -10,6 +10,7 @@ forked from [StoneForests/flink-mqtt-connector](https://github.com/StoneForests/
 # 变更
 - 更新依赖至最新版本（兼容Flink 1.19.1）
 - 增加格式支持 (raw,csv,json)
+- 增加常数字段映射
 
 # 使用说明
 ## 编译与部署
@@ -39,8 +40,6 @@ OS name: "linux", version: "6.5.0-44-generic", arch: "amd64", family: "unix"
 'hostUrl' = 'tcp://localhost:1883', # the mqtt's connect host url. string, no default value
 'uername' = '',     # the mqtt's connect username. string, no default value
 'password' = '',    # the mqtt's connect password. string, no default value
-'sinkTopics' = '',  # the mqtt's sink topic. string, no default value
-'sourceTopics' = '',  # the mqtt's source topics. no default value
 'clientIdPrefix' = '',   # the mqtt's connect client id's prefix. this is a logical application name. Pass a string, like “<<your-app-name>>”. string, default is randomUUID
 'qos' = '1'   # the mqtt's sink qos. int, default is 1 ,  
 'autoReconnect' = 'true',  # the mqtt's connect automatic reconnect.default is true
@@ -49,6 +48,8 @@ OS name: "linux", version: "6.5.0-44-generic", arch: "amd64", family: "unix"
 'keepAliveInterval' = '60', # the mqtt's connect keep alive interval, int, default is 60
 'sinkParallelism' = '1', # the mqtt's sink parallelism. int, default is 1.
 'format' = 'raw', # 数据格式，参照Flink文档。 
+'json.timestamp-format.standard' = 'ISO-8601', # 时间戳格式（缺省格式ISO-8601）
+'json.field.mapping' = 'tableFieldName:jsonFieldName,tableFieldName=constValue' # 支持多个字段映射(:)以及常数映射(=)，用逗号(,)隔开
 ```
 
 ## 使用例子
