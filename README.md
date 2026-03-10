@@ -222,7 +222,39 @@ CREATE TABLE sink(
 INSERT INTO sink (id,name) VALUES(1,'Jeen');
 INSERT INTO sink (id,name) VALUES (2,'Jack');
 ```
+7. MQTT source using json.field.mapping
+```sql
+/* fieldname mapping and const value mapping */
+CREATE TABLE source(
+    id INT,
+    pv  FLOAT,
+    `time` TIMESTAMP_LTZ(3),
+    WATERMARK FOR `time` AS `time` - INTERVAL '1' SECOND
+) WITH (
+    'connector' = 'mqtt',
+    'hostUrl' = 'tcp://localhost:1883',
+    'topics' = 'FFX/BD1/UpperRoll/Load',
+    'format' = 'json',
+    'json.timestamp-format.standard' = 'ISO-8601',
+    'json.field.mapping' = 'pv:floatVal,id=1'
+);
 
+/* in this way, the const field can be used as physical primary key */
+CREATE TABLE source(
+    id INT,
+    pv  FLOAT,
+    `time` TIMESTAMP_LTZ(3),
+    WATERMARK FOR `time` AS `time` - INTERVAL '1' SECOND,
+    PRIMARY KEY (id) NOT ENFORCED
+) WITH (
+    'connector' = 'mqtt',
+    'hostUrl' = 'tcp://localhost:1883',
+    'topics' = 'FFX/BD1/UpperRoll/Load',
+    'format' = 'json',
+    'json.timestamp-format.standard' = 'ISO-8601',
+    'json.field.mapping' = 'pv:floatVal,id=1'
+);
+```
 ### Use PyFlink Table API
 
 ```python

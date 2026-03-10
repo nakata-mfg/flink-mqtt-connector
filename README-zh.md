@@ -179,6 +179,40 @@ INSERT INTO sink (id,name) VALUES (2,'Jack');
 
 ```
 
+7. MQTT source使用字段名字映射和常量映射
+```sql
+/* 允许字段名映射和常量映射 */
+CREATE TABLE source(
+    id INT,
+    pv  FLOAT,
+    `time` TIMESTAMP_LTZ(3),
+    WATERMARK FOR `time` AS `time` - INTERVAL '1' SECOND
+) WITH (
+    'connector' = 'mqtt',
+    'hostUrl' = 'tcp://localhost:1883',
+    'topics' = 'FFX/BD1/UpperRoll/Load',
+    'format' = 'json',
+    'json.timestamp-format.standard' = 'ISO-8601',
+    'json.field.mapping' = 'pv:floatVal,id=1'
+);
+
+/* 这样，常量字段可以定义为物理主键，方便表的连接 */
+CREATE TABLE source(
+    id INT,
+    pv  FLOAT,
+    `time` TIMESTAMP_LTZ(3),
+    WATERMARK FOR `time` AS `time` - INTERVAL '1' SECOND,
+    PRIMARY KEY (id) NOT ENFORCED
+) WITH (
+    'connector' = 'mqtt',
+    'hostUrl' = 'tcp://localhost:1883',
+    'topics' = 'FFX/BD1/UpperRoll/Load',
+    'format' = 'json',
+    'json.timestamp-format.standard' = 'ISO-8601',
+    'json.field.mapping' = 'pv:floatVal,id=1'
+);
+```
+
 ### 使用PyFlink Table API
 ```python
 # filename: m66.py
