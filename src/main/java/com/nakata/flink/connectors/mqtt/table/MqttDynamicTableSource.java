@@ -51,11 +51,23 @@ public class MqttDynamicTableSource implements ScanTableSource {
 
         final String mappingStr = options.get(MqttOptions.JSON_FIELD_MAPPING);
         final Map<String, String> jsonFieldMapping = new HashMap<>();
+        final Map<String, String> constFieldMapping = new HashMap<>();
         if (mappingStr != null && !mappingStr.isEmpty()) {
             for (String entry : mappingStr.split(",")) {
-                String[] kv = entry.split(":");
-                if (kv.length == 2) {
-                    jsonFieldMapping.put(kv[0].trim(), kv[1].trim());
+                entry = entry.trim();
+                // JSON field mapping: pv:floatVal
+                if (entry.contains(":")) {
+                    String[] kv = entry.split(":",2);
+                    if (kv.length == 2) {
+                        jsonFieldMapping.put(kv[0].trim(), kv[1].trim());
+                    }
+                }
+                // constant value mapping: id=1
+                else if (entry.contains("=")) {
+                    String[] kv = entry.split("=",2);
+                    if (kv.length == 2) {
+                        constFieldMapping.put(kv[0].trim(), kv[1].trim());
+                    }
                 }
             }
         }
@@ -71,7 +83,7 @@ public class MqttDynamicTableSource implements ScanTableSource {
         boolean automaticReconnect = this.options.get(AUTOMATIC_RECONNECT);
         Integer maxInflight = this.options.get(MAX_INFLIGHT);
         Long pollInterval = this.options.get(POLL_INTERVAL);
-        final SourceFunction<RowData> sourceFunction = new MqttSourceFunction<>(broker, username, password, topics, cleanSession, clientIdPrefix, automaticReconnect, connectionTimeout, keepAliveInterval, maxInflight, pollInterval, deserializer,jsonFieldMapping);
+        final SourceFunction<RowData> sourceFunction = new MqttSourceFunction<>(broker, username, password, topics, cleanSession, clientIdPrefix, automaticReconnect, connectionTimeout, keepAliveInterval, maxInflight, pollInterval, deserializer,jsonFieldMapping,constFieldMapping);
         return SourceFunctionProvider.of(sourceFunction, false);
     }
 

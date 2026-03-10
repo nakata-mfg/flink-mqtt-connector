@@ -44,9 +44,10 @@ public class MqttSourceFunction<T> extends RichSourceFunction<T> implements Resu
     //存储订阅主题
     private final DeserializationSchema<T> deserializer;
     private final Map<String, String> jsonFieldMapping;
+    private final Map<String, String> constFieldMapping;
 
 
-    public MqttSourceFunction(String hostUrl, String username, String password, String topics, boolean cleanSession, String clientIdPrefix, boolean automaticReconnect, Integer connectionTimeout, Integer keepAliveInterval, Integer maxInflight, Long pollInterval, DeserializationSchema<T> deserializer, Map<String, String> jsonFieldMapping ) {
+    public MqttSourceFunction(String hostUrl, String username, String password, String topics, boolean cleanSession, String clientIdPrefix, boolean automaticReconnect, Integer connectionTimeout, Integer keepAliveInterval, Integer maxInflight, Long pollInterval, DeserializationSchema<T> deserializer, Map<String, String> jsonFieldMapping, Map<String, String> constFieldMapping ) {
         this.topics = topics;
         this.hostUrl = hostUrl;
         this.username = username;
@@ -60,6 +61,7 @@ public class MqttSourceFunction<T> extends RichSourceFunction<T> implements Resu
         this.pollInterval = pollInterval;
         this.deserializer = deserializer;
         this.jsonFieldMapping = jsonFieldMapping;
+        this.constFieldMapping = constFieldMapping;
     }
 
     //包装连接的方法
@@ -105,12 +107,37 @@ public class MqttSourceFunction<T> extends RichSourceFunction<T> implements Resu
                 try {
                     String payloadStr = new String(mqttMessage.getPayload(), StandardCharsets.UTF_8);
 
-                    // naive key rename
+                    // 1 rename JSON fields
                     for (Map.Entry<String, String> entry : jsonFieldMapping.entrySet()) {
                         String tableCol = entry.getKey(); // e.g., "myLoad"
                         String jsonKey = entry.getValue(); // e.g., "floatVal"
                         payloadStr = payloadStr.replace("\"" + jsonKey + "\"", "\"" + tableCol + "\"");
                     }
+
+                    // 2 inject constant fields
+                    if (!constFieldMapping.isEmpty()) {
+                        StringBuilder constJson = new StringBuilder();
+
+                        for (Map.Entry<String, String> entry : constFieldMapping.entrySet()) {
+                            if (constJson.length() > 0) {
+                                constJson.append(",");
+                            }
+
+                            String key = entry.getKey();
+                            String value = entry.getValue();
+
+                            // numeric detection
+                            if (value.matches("-?\\d+(\\.\\d+)?")) {
+                                constJson.append("\"").append(key).append("\":").append(value);
+                            } else {
+                                constJson.append("\"").append(key).append("\":\"").append(value).append("\"");
+                            }
+                        }
+
+                        // insert before final }
+                        payloadStr = payloadStr.replaceFirst("\\}$", "," + constJson + "}");
+                    }
+
                     deserialize = deserializer.deserialize(payloadStr.getBytes(StandardCharsets.UTF_8));
 //                    deserialize = deserializer.deserialize(mqttMessage.getPayload());
                 } catch (Exception e) {

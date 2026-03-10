@@ -6,7 +6,7 @@
 
     <groupId>com.nakata.yinjilong</groupId>
     <artifactId>flink-mqtt-connector</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <packaging>jar</packaging>
     <name>Flink MQTT Connector</name>
 

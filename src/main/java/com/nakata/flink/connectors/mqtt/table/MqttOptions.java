@@ -86,7 +86,11 @@ public class MqttOptions {
             ConfigOptions.key("json.field.mapping")
                     .stringType()
                     .noDefaultValue()
-                    .withDescription("Mapping from JSON field to table column, e.g., jsonField:columnName");
+                    .withDescription(
+                            "Mapping for table fields. "
+                                    + "Use 'column:jsonField' for JSON mapping "
+                                    + "or 'column=value' for constant values. "
+                                    + "Example: pv:floatVal,id=1");
 
 //    public static final ConfigOption<Integer> SINK_PARALLELISM =
 //            ConfigOptions.key("sinkParallelism")
